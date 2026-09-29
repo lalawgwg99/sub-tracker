@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6fed">
+<title>訂閱管家</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1>📋 訂閱管家</h1>
+  <div class="today" id="todayLabel"></div>
+</header>
+
+<main>
+  <!-- 首頁 -->
+  <section class="view show" id="view-home">
+    <div id="homeBanner"></div>
+    <div class="grid2">
+      <div class="card stat"><div class="big" id="statMonthPaid">–</div><div class="label">本月已扣</div></div>
+      <div class="card stat"><div class="big" id="statNextMonth">–</div><div class="label">下月預估</div></div>
+    </div>
+    <div class="card">
+      <h3>⏰ 7 天內扣款</h3>
+      <div id="dueList"><div class="muted">載入中…</div></div>
+    </div>
+    <div class="card">
+      <h3>📊 每月花費分佈 <span class="muted" style="font-weight:400">（估算）</span></h3>
+      <div id="catBars"><div class="muted">載入中…</div></div>
+      <div class="foot-note">USD 以 1:32 換算台幣；年繳以月平均計入。</div>
+    </div>
+  </section>
+
+  <!-- 清單 -->
+  <section class="view" id="view-list">
+    <div id="subList"><div class="loading">載入中…</div></div>
+    <details class="hist" id="histWrap" style="display:none">
+      <summary id="histSummary">已取消的訂閱</summary>
+      <div id="histList"></div>
+    </details>
+  </section>
+
+  <!-- 月曆 -->
+  <section class="view" id="view-cal">
+    <div class="card">
+      <div class="cal-head">
+        <button id="calPrev" aria-label="上個月">‹</button>
+        <strong id="calTitle"></strong>
+        <button id="calNext" aria-label="下個月">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="foot-note">紅點為扣款日（含試用轉付費）。</div>
+    </div>
+  </section>
+
+  <!-- 取消指南 -->
+  <section class="view" id="view-guide">
+    <div class="card guide" id="guideBody"></div>
+  </section>
+
+  <!-- 新增/編輯 -->
+  <section class="view" id="view-form">
+    <div class="card">
+      <h3 id="formTitle">新增訂閱</h3>
+      <div class="muted" style="margin-bottom:4px">快速帶入：</div>
+      <div class="chips" id="presetChips"></div>
+      <form class="f" id="subForm" onsubmit="return false">
+        <input type="hidden" id="f_id">
+        <label>名稱 *</label>
+        <input id="f_name" placeholder="例：Netflix" maxlength="100">
+        <div class="grid2">
+          <div><label>金額 *</label><input id="f_amount" type="number" min="0" step="0.01" placeholder="390"></div>
+          <div><label>幣別</label>
+            <select id="f_currency"><option value="TWD">TWD</option><option value="USD">USD</option></select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div><label>週期</label>
+            <select id="f_cycle">
+              <option value="monthly">每月</option>
+              <option value="weekly">每週</option>
+              <option value="quarterly">每季</option>
+              <option value="halfyear">每半年</option>
+              <option value="yearly">每年</option>
+              <option value="custom">自訂天數</option>
+            </select>
+          </div>
+          <div id="cycleDaysWrap" style="display:none"><label>每幾天</label><input id="f_cycle_days" type="number" min="1" value="30"></div>
+        </div>
+        <label>首次扣款日 *</label>
+        <input id="f_first_billing" type="date">
+        <div class="grid2">
+          <div><label>狀態</label>
+            <select id="f_status">
+              <option value="active">使用中</option>
+              <option value="trial">試用中</option>
+              <option value="paused">已暫停</option>
+            </select>
+          </div>
+          <div id="trialEndWrap" style="display:none"><label>試用到期日</label><input id="f_trial_end" type="date"></div>
+        </div>
+        <div class="grid2">
+          <div><label>分類</label>
+            <select id="f_category">
+              <option value="">未分類</option>
+              <option>影音</option><option>音樂</option><option>雲端</option>
+              <option>遊戲</option><option>健身</option><option>購物會員</option>
+              <option>工具</option><option>其他</option>
+            </select>
+          </div>
+          <div><label>付款方式</label><input id="f_pay_method" placeholder="例：信用卡末四碼" maxlength="50"></div>
+        </div>
+        <label>備註</label>
+        <textarea id="f_note" maxlength="500"></textarea>
+        <div style="margin-top:14px"><button class="primary block" id="formSave">儲存</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button data-view="view-home" class="on"><span class="ico">🏠</span>首頁</button>
+  <button data-view="view-list"><span class="ico">📝</span>清單</button>
+  <button data-view="view-cal"><span class="ico">📅</span>月曆</button>
+  <button data-view="view-guide"><span class="ico">❓</span>取消指南</button>
+  <button data-view="view-form"><span class="ico">＋</span>新增</button>
+</nav>
+
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
