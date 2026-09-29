@@ -115,17 +115,25 @@ const json = (obj, status = 200) =>
   });
 
 export async function onRequestGet({ env }) {
-  const blocked = await ensureSchema(env);
-  if (blocked) return blocked;
-  return json({ ok: true, subs: await listSubs(env) });
+  try {
+    const blocked = await ensureSchema(env);
+    if (blocked) return blocked;
+    return json({ ok: true, subs: await listSubs(env) });
+  } catch (e) {
+    return json({ ok: false, error: 'server_error', message: String((e && e.message) || e) }, 500);
+  }
 }
 
 export async function onRequestPost({ env, request }) {
-  const blocked = await ensureSchema(env);
-  if (blocked) return blocked;
-  let body = {};
-  try { body = await request.json(); } catch (e) { return json({ ok: false, error: 'bad_json' }, 400); }
-  const r = await createSub(env, body);
-  if (r.error) return json({ ok: false, error: r.error }, 400);
-  return json({ ok: true, sub: r.row }, 201);
+  try {
+    const blocked = await ensureSchema(env);
+    if (blocked) return blocked;
+    let body = {};
+    try { body = await request.json(); } catch (e) { return json({ ok: false, error: 'bad_json' }, 400); }
+    const r = await createSub(env, body);
+    if (r.error) return json({ ok: false, error: r.error }, 400);
+    return json({ ok: true, sub: r.row }, 201);
+  } catch (e) {
+    return json({ ok: false, error: 'server_error', message: String((e && e.message) || e) }, 500);
+  }
 }

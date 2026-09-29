@@ -61,6 +61,7 @@ return { sent: false, reason: 'fetch_error', detail: String(e)};
 }
 
 export async function onRequestGet({ env}) {
+try {
 const blocked = await ensureSchema(env);
 if (blocked) return blocked;
 const today = todayStr();
@@ -81,4 +82,6 @@ dueSoon: due.dueSoon,
 trialEnding: due.trialEnding,
 email: email
 }), { headers: { 'Content-Type': 'application/json'}});
+} catch (e) {
+return new Response(JSON.stringify({ ok: false, error: 'server_error', message: String((e && e.message) || e) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
 }
